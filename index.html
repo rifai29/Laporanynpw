@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Pak Fadholi - V4.7</title>
+    <style>
+        :root { --navy: #1e3a8a; --bg: #f4f7fa; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 10px; }
+        .container { max-width: 1000px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: var(--navy); color: white; padding: 15px; text-align: center; }
+        .section { padding: 15px; border-bottom: 1px solid #eee; }
+        textarea { width: 100%; height: 120px; border: 2px solid #ddd; border-radius: 8px; padding: 10px; font-size: 13px; }
+        .btn { border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; padding: 12px; }
+        .btn-process { background: #e2e8f0; color: var(--navy); margin-top: 10px; }
+        .table-wrapper { overflow-x: auto; padding: 10px; }
+        table { width: 100%; border-collapse: collapse; min-width: 850px; }
+        th { background: #f8fafc; padding: 8px; border-bottom: 2px solid var(--navy); color: var(--navy); font-size: 11px; }
+        td { padding: 5px; border-bottom: 1px solid #eee; text-align: center; font-size: 12px; }
+        .toko-name { font-weight: bold; color: #444; text-align: left; }
+        .target-label { color: #94a3b8; font-size: 10px; display: block; }
+        input { width: 85%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; text-align: center; font-weight: bold; }
+        .btn-copy { background: #059669; color: white; font-size: 16px; margin: 15px; width: calc(100% - 30px); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header"><h3 style="margin:0">GENERATOR LAPORAN V4.7</h3></div>
+    <div class="section">
+        <textarea id="rawInput" placeholder="Tempel laporan di sini..."></textarea>
+        <button class="btn btn-process" onclick="importData()">PROSES DATA</button>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>TOKO</th><th>SALES</th><th>CHT</th><th>ICH</th><th>RNS</th><th>TOP</th><th>FRT</th><th>TTM</th><th>PLS</th><th>CSB</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+    <button class="btn btn-copy" onclick="copyWA()">SALIN KE WHATSAPP</button>
+</div>
+
+<script>
+    const dataToko = [
+        { n: "ANBA", s: "17.599.926", c: "16", i: "5", r: "1", tc: "1", tm: "50" },
+        { n: "YNPW", s: "21.645.276", c: "17", i: "7", r: "1", tc: "2", tm: "50" },
+        { n: "GDGN", s: "25.401.388", c: "17", i: "7", r: "2", tc: "2", tm: "50" },
+        { n: "GRGB", s: "28.622.850", c: "13", i: "6", r: "2", tc: "2", tm: "50" },
+        { n: "PLMN", s: "21.523.517", c: "23", i: "5", r: "2", tc: "2", tm: "50" },
+        { n: "FMI",  s: "25.512.077", c: "15", i: "4", r: "3", tc: "4", tm: "50" },
+        { n: "WMI",  s: "17.526.288", c: "15", i: "7", r: "2", tc: "2", tm: "50" },
+        { n: "PDA",  s: "21.904.787", c: "17", i: "6", r: "2", tc: "2", tm: "50" },
+        { n: "KTL",  s: "15.492.335", c: "12", i: "6", r: "1", tc: "1", tm: "50" },
+        { n: "CRLW", s: "15.421.747", c: "10", i: "5", r: "1", tc: "2", tm: "50" }
+    ];
+
+    const tbody = document.getElementById('tableBody');
+    dataToko.forEach((tk, i) => {
+        tbody.innerHTML += `<tr>
+            <td class="toko-name">${tk.n}</td>
+            <td><span class="target-label">${tk.s}</span><input type="text" id="s_${i}"></td>
+            <td><span class="target-label">${tk.c}</span><input type="text" id="c_${i}"></td>
+            <td><span class="target-label">${tk.i}</span><input type="text" id="i_${i}"></td>
+            <td><span class="target-label">${tk.r}</span><input type="text" id="r_${i}"></td>
+            <td><span class="target-label">${tk.tc}</span><input type="text" id="tc_${i}"></td>
+            <td><span class="target-label">-</span><input type="text" id="f_${i}"></td>
+            <td><span class="target-label">${tk.tm}</span><input type="text" id="tm_${i}"></td>
+            <td><span class="target-label">200k</span><input type="text" id="p_${i}"></td>
+            <td><span class="target-label">-</span><input type="text" id="cs_${i}"></td>
+        </tr>`;
+    });
+
+    function cleanNum(val, isPulsa = false) {
+        if(!val || val === "-" || val === "" || val === "0") return 0;
+        let s = val.toString().toLowerCase().trim();
+        let n = parseFloat(s.replace(/[^\d]/g, '')) || 0;
+        if (isPulsa && !s.includes('k') && n > 0 && n < 1000) return n * 1000;
+        if (s.includes('k')) return n * 1000;
+        return n;
+    }
+
+    function importData() {
+        const raw = document.getElementById('rawInput').value.toUpperCase();
+        const lines = raw.split('\n');
+        let mode = "s";
+
+        lines.forEach(line => {
+            let row = line.trim();
+            if(!row) return;
+
+            if(row.includes("CHITATO")) mode = "c";
+            else if(row.includes("ICHITAN")) mode = "i";
+            else if(row.includes("RINSO")) mode = "r";
+            else if(row.includes("TOP COFFEE")) mode = "tc";
+            else if(row.includes("FRUIT")) mode = "f";
+            else if(row.includes("TTM")) mode = "tm";
+            else if(row.includes("PULSA")) mode = "p";
+            else if(row.includes("CASHBACK")) mode = "cs";
+            else if(row.includes("//") && !row.includes("TOKO:")) mode = "s";
+
+            dataToko.forEach((tk, i) => {
+                if(row.includes(tk.n)) {
+                    let afterName = row.split(tk.n)[1] || "";
+                    let isTrailingSlash = afterName.trim().endsWith("/");
+                    let parts = afterName.split(/[\/\s]+/).filter(v => v.trim() !== "" && !v.includes('%'));
+
+                    let result = "";
+                    if (!isTrailingSlash && parts.length > 0) {
+                        if (mode === 's') {
+                            if (parts.length >= 2) result = parts[1];
+                        } else {
+                            let lastVal = parts[parts.length - 1];
+                            let tgt = (mode==='p'?'200':(mode==='tm'?'50':tk[mode]));
+                            if (!(parts.length === 1 && lastVal === tgt)) {
+                                result = lastVal;
+                            }
+                        }
+                    }
+                    document.getElementById(`${mode}_${i}`).value = result;
+                }
+            });
+        });
+        alert("Proses Selesai. Target tanpa hasil otomatis diabaikan.");
+    }
+
+    function copyWA() {
+        let d = new Date();
+        const bln = ["JANUARI","FEBRUARI","MARET","APRIL","MEI","JUNI","JULI","AGUSTUS","SEPTEMBER","OKTOBER","NOVEMBER","DESEMBER"];
+        let res = `*LAPORAN ITEM FOKUS SIANG AREA PAK FADHOLI*\n${d.getDate()} ${bln[d.getMonth()]} ${d.getFullYear()}\n\nTOKO: target//act//acv\n`;
+        
+        dataToko.forEach((tk, i) => {
+            let act = document.getElementById(`s_${i}`).value;
+            let actNum = cleanNum(act);
+            let row = `${i+1}.${tk.n} // ${tk.s}/${act || "0"}`;
+            if(act && actNum > 0) row += `/${((actNum/cleanNum(tk.s))*100).toFixed(1)}%`;
+            res += row + "\n";
+        });
+
+        const items = [
+            {n:"CHITATO", id:"c", e:"🐂"}, {n:"ICHITAN", id:"i", e:"🍶"},
+            {n:"RINSO", id:"r", e:"🧼"}, {n:"TOP COFFEE", id:"tc", e:"☕"},
+            {n:"CUT FRUIT", id:"f", e:"🍍🍉", s:true}, {n:"TTM", id:"tm", e:"🔥🔥"},
+            {n:"PULSA", id:"p", e:"🏴‍☠️🏴‍☠️"}, {n:"CASHBACK", id:"cs", e:"✨✨", s:true}
+        ];
+
+        items.forEach(it => {
+            res += `\n*${it.e}${it.n}${it.e}*\n\n`;
+            dataToko.forEach((tk, i) => {
+                let act = document.getElementById(`${it.id}_${i}`).value;
+                let tgt = (it.id==='p'?'200k':(it.id==='tm'?'50':tk[it.id]));
+                if(it.s) {
+                    res += `${i+1}.${tk.n} /${act || "0"}\n`;
+                } else {
+                    let row = `${i+1}.${tk.n}/${tgt}/${act || "0"}`;
+                    if(act && cleanNum(act, it.id==='p') > 0) {
+                        let per = (cleanNum(act, it.id==='p')/cleanNum(tgt, it.id==='p'))*100;
+                        row += `/${per.toFixed(1)}%`;
+                    }
+                    res += row + "\n";
+                }
+            });
+        });
+
+        const el = document.createElement('textarea');
+        el.value = res; document.body.appendChild(el);
+        el.select(); document.execCommand('copy');
+        document.body.removeChild(el);
+        alert("Laporan Tersalin!");
+    }
+</script>
+</body>
+</html>

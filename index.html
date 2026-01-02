@@ -136,7 +136,8 @@
             let act = document.getElementById(`s_${i}`).value;
             let actNum = cleanNum(act);
             let row = `${i+1}.${tk.n} // ${tk.s}/${act || "0"}`;
-            if(act && actNum > 0) row += `/${((actNum/cleanNum(tk.s))*100).toFixed(1)}%`;
+            // MENGGUNAKAN Math.round() UNTUK ANGKA BULAT
+            if(act && actNum > 0) row += `/${Math.round((actNum/cleanNum(tk.s))*100)}%`;
             res += row + "\n";
         });
 
@@ -157,8 +158,9 @@
                 } else {
                     let row = `${i+1}.${tk.n}/${tgt}/${act || "0"}`;
                     if(act && cleanNum(act, it.id==='p') > 0) {
-                        let per = (cleanNum(act, it.id==='p')/cleanNum(tgt, it.id==='p'))*100;
-                        row += `/${per.toFixed(1)}%`;
+                        // MENGGUNAKAN Math.round() UNTUK ANGKA BULAT
+                        let per = Math.round((cleanNum(act, it.id==='p')/cleanNum(tgt, it.id==='p'))*100);
+                        row += `/${per}%`;
                     }
                     res += row + "\n";
                 }
@@ -174,3 +176,4 @@
 </script>
 </body>
 </html>
+

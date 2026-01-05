@@ -33,21 +33,18 @@
         
         .toko-name { font-weight: 700; color: var(--midi-red); text-align: center; font-size: 12px; position: sticky; left: 0; background: var(--midi-cream); z-index: 10; border-right: 1px solid var(--midi-border); width: 70px; }
         .target-label { color: #94a3b8; font-size: 9px; display: block; margin-bottom: 2px; }
+        .acv-label { color: #059669; font-size: 10px; font-weight: 700; display: block; margin-top: 2px; }
         input[type="text"] { width: 80px; padding: 8px 2px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center; font-weight: 700; font-size: 14px; }
 
         .copy-container { padding: 20px 0; }
         .btn-copy { background: var(--midi-red); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; padding: 18px; font-size: 16px; box-shadow: 0 4px 15px rgba(185, 28, 28, 0.2); }
 
-        /* Notifikasi Modern */
         #toast {
             position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
             background: #231f20; color: white; padding: 14px 28px; border-radius: 50px;
             display: flex; align-items: center; gap: 12px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 999; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-weight: 600;
         }
-        #toast.show { bottom: 30px; }
-        .dot { height: 10px; width: 10px; background-color: #fbbf24; border-radius: 50%; display: inline-block; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -57,7 +54,7 @@
 <div class="main-content">
     <div class="input-card">
         <textarea id="rawInput" placeholder="Tempel laporan mentah di sini..."></textarea>
-        <button class="btn btn-process" onclick="importData()">PROSES DATA</button>
+        <button class="btn-process" onclick="importData()">PROSES DATA</button>
     </div>
 
     <div class="table-container">
@@ -74,11 +71,11 @@
     </div>
 
     <div class="copy-container">
-        <button class="btn btn-copy" onclick="copyWA()">SALIN LAPORAN KE WHATSAPP</button>
+        <button class="btn-copy" onclick="copyWA()">SALIN LAPORAN KE WHATSAPP</button>
     </div>
 </div>
 
-<div id="toast"><span class="dot"></span> <span id="toast-msg">Laporan Berhasil Disalin!</span></div>
+<div id="toast"><span id="toast-msg">Laporan Disalin!</span></div>
 
 <script>
     const dataToko = [
@@ -98,31 +95,33 @@
     dataToko.forEach((tk, i) => {
         tbody.innerHTML += `<tr>
             <td class="toko-name">${tk.n}</td>
-            <td><span class="target-label">${tk.s}</span><input type="text" id="s_${i}"></td>
-            <td><span class="target-label">${tk.aq}</span><input type="text" id="aq_${i}"></td>
-            <td><span class="target-label">${tk.dk}</span><input type="text" id="dk_${i}"></td>
-            <td><span class="target-label">${tk.gr}</span><input type="text" id="gr_${i}"></td>
-            <td><span class="target-label">${tk.lf}</span><input type="text" id="lf_${i}"></td>
-            <td><span class="target-label">${tk.pp}</span><input type="text" id="pp_${i}"></td>
-            <td><span class="target-label">${tk.sn}</span><input type="text" id="sn_${i}"></td>
+            <td><span class="target-label">${tk.s}</span><input type="text" id="s_${i}" oninput="calcPercent('${i}', 's', '${tk.s}')"><span id="acv_s_${i}" class="acv-label">0%</span></td>
+            <td><span class="target-label">${tk.aq}</span><input type="text" id="aq_${i}" oninput="calcPercent('${i}', 'aq', '${tk.aq}')"><span id="acv_aq_${i}" class="acv-label">0%</span></td>
+            <td><span class="target-label">${tk.dk}</span><input type="text" id="dk_${i}" oninput="calcPercent('${i}', 'dk', '${tk.dk}')"><span id="acv_dk_${i}" class="acv-label">0%</span></td>
+            <td><span class="target-label">${tk.gr}</span><input type="text" id="gr_${i}" oninput="calcPercent('${i}', 'gr', '${tk.gr}')"><span id="acv_gr_${i}" class="acv-label">0%</span></td>
+            <td><span class="target-label">${tk.lf}</span><input type="text" id="lf_${i}" oninput="calcPercent('${i}', 'lf', '${tk.lf}')"><span id="acv_lf_${i}" class="acv-label">0%</span></td>
+            <td><span class="target-label">${tk.pp}</span><input type="text" id="pp_${i}" oninput="calcPercent('${i}', 'pp', '${tk.pp}')"><span id="acv_pp_${i}" class="acv-label">0%</span></td>
+            <td><span class="target-label">${tk.sn}</span><input type="text" id="sn_${i}" oninput="calcPercent('${i}', 'sn', '${tk.sn}')"><span id="acv_sn_${i}" class="acv-label">0%</span></td>
             <td><span class="target-label">0</span><input type="text" id="f_${i}"></td>
-            <td><span class="target-label">${tk.tm}</span><input type="text" id="tm_${i}"></td>
-            <td><span class="target-label">200k</span><input type="text" id="p_${i}"></td>
+            <td><span class="target-label">${tk.tm}</span><input type="text" id="tm_${i}" oninput="calcPercent('${i}', 'tm', '${tk.tm}')"><span id="acv_tm_${i}" class="acv-label">0%</span></td>
+            <td><span class="target-label">200</span><input type="text" id="p_${i}" oninput="calcPercent('${i}', 'p', '200')"><span id="acv_p_${i}" class="acv-label">0%</span></td>
             <td><span class="target-label">0</span><input type="text" id="cs_${i}"></td>
         </tr>`;
     });
 
-    function showToast(msg) {
-        const toast = document.getElementById('toast');
-        document.getElementById('toast-msg').innerText = msg;
-        toast.classList.add('show');
-        setTimeout(() => { toast.classList.remove('show'); }, 2000);
-    }
-
     function cleanNum(val) {
         if(!val) return 0;
-        let s = val.toString().replace(/[^\d]/g, '');
-        return parseFloat(s) || 0;
+        return parseInt(val.toString().replace(/[^0-9]/g, '')) || 0;
+    }
+
+    function calcPercent(index, idPrefix, targetVal) {
+        const actVal = document.getElementById(`${idPrefix}_${index}`).value;
+        const actNum = cleanNum(actVal);
+        const tgtNum = cleanNum(targetVal);
+        const label = document.getElementById(`acv_${idPrefix}_${index}`);
+        if (label && tgtNum > 0) {
+            label.innerText = Math.round((actNum / tgtNum) * 100) + "%";
+        }
     }
 
     function importData() {
@@ -132,51 +131,40 @@
         let mode = "s";
         lines.forEach(line => {
             let row = line.trim();
-            if(row.includes("AQUA")) mode = "aq";
-            else if(row.includes("KELINCI")) mode = "dk";
-            else if(row.includes("GARNIER")) mode = "gr";
-            else if(row.includes("LIFEBUOY")) mode = "lf";
-            else if(row.includes("PEPSODENT")) mode = "pp";
-            else if(row.includes("SUNLIGHT")) mode = "sn";
-            else if(row.includes("FRUIT")) mode = "f";
-            else if(row.includes("TTM")) mode = "tm";
-            else if(row.includes("PULSA")) mode = "p";
-            else if(row.includes("CASHBACK")) mode = "cs";
+            const keywords = { "AQUA":"aq", "KELINCI":"dk", "GARNIER":"gr", "LIFEBUOY":"lf", "PEPSODENT":"pp", "SUNLIGHT":"sn", "FRUIT":"f", "TTM":"tm", "PULSA":"p", "CASHBACK":"cs" };
+            for (let k in keywords) { if(row.includes(k)) mode = keywords[k]; }
             
             dataToko.forEach((tk, i) => {
                 if(row.includes(tk.n)) {
                     let val = row.split('/').pop().trim();
+                    // Jika mode pulsa, bersihkan huruf K atau titik agar jadi angka murni (misal 100K -> 100)
+                    if(mode === 'p') val = val.replace(/K/g, '').replace(/\./g, '');
                     document.getElementById(`${mode}_${i}`).value = val;
+                    let targetVal = (mode === 'p') ? '200' : (mode === 'tm' ? '50' : tk[mode]);
+                    if (targetVal) calcPercent(i, mode, targetVal);
                 }
             });
         });
-        showToast("Data Siap!");
+        showToast("Data Diproses!");
     }
 
     function copyWA() {
         let d = new Date();
         const bln = ["JANUARI","FEBRUARI","MARET","APRIL","MEI","JUNI","JULI","AGUSTUS","SEPTEMBER","OKTOBER","NOVEMBER","DESEMBER"];
-        let res = `*LAPORAN ITEM FOKUS PAGI AREA PAK FADHOLI*\n${d.getDate()} ${bln[d.getMonth()]} ${d.getFullYear()}\n\nTOKO: target//act//acv\n`;
+        let res = `*LAPORAN ITEM FOKUS PAGI AREA PAK FADHOLI*\n${d.getDate()} ${bln[d.getMonth()]} ${d.getFullYear()}\n\nTOKO: target/act/acv\n`;
         
         dataToko.forEach((tk, i) => {
             let act = document.getElementById(`s_${i}`).value || "0";
-            let actNum = cleanNum(act);
-            let row = `${i+1}.${tk.n} // ${tk.s}/${act}`;
-            if(actNum > 0) row += `/${Math.round((actNum/cleanNum(tk.s))*100)}%`;
-            res += row + "\n";
+            let acv = (cleanNum(tk.s) > 0) ? Math.round((cleanNum(act)/cleanNum(tk.s))*100) : 0;
+            res += `${i+1}.${tk.n}//${tk.s}/${act}/${acv}%\n`;
         });
 
         const items = [
-            {n:"AQUA 600ml/1.5l", id:"aq", e:"🍶", full:true},
-            {n:"Dua Kelinci", id:"dk", e:"🥜🐰", full:true},
-            {n:"Garnier FF", id:"gr", e:"🚿💆🏻‍♀️", full:true},
-            {n:"Lifebuoy", id:"lf", e:"🚿🛁", full:true},
-            {n:"Pepsodent", id:"pp", e:"🪥🚰", full:true},
-            {n:"Sunlight", id:"sn", e:"🍽️🧼", full:true},
-            {n:"CUT FRUIT", id:"f", e:"🍍🍉", full:false},
-            {n:"TTM", id:"tm", e:"🔥🔥", full:true},
-            {n:"PULSA", id:"p", e:"🏴‍☠️🏴‍☠️", full:true},
-            {n:"CASHBACK", id:"cs", e:"✨✨", full:false}
+            {n:"AQUA 600ml/1.5l", id:"aq", e:"🍶", full:true}, {n:"Dua Kelinci", id:"dk", e:"🥜🐰", full:true},
+            {n:"Garnier FF", id:"gr", e:"🚿💆🏻‍♀️", full:true}, {n:"Lifebuoy", id:"lf", e:"🚿🛁", full:true},
+            {n:"Pepsodent", id:"pp", e:"🪥🚰", full:true}, {n:"Sunlight", id:"sn", e:"🍽️🧼", full:true},
+            {n:"CUT FRUIT", id:"f", e:"🍍🍉", full:false}, {n:"TTM", id:"tm", e:"🔥🔥", full:true},
+            {n:"PULSA", id:"p", e:"🏴‍☠️🏴‍☠️", full:true, isPulsa: true}, {n:"CASHBACK", id:"cs", e:"✨✨", full:false}
         ];
 
         items.forEach(it => {
@@ -184,10 +172,18 @@
             dataToko.forEach((tk, i) => {
                 let act = document.getElementById(`${it.id}_${i}`).value || "0";
                 if(it.full) {
-                    let tgt = (it.id==='p'?'200k':(it.id==='tm'?'50':tk[it.id]));
-                    res += `${i+1}.${tk.n}/${tgt}/${act}\n`;
+                    let tgtVal = (it.id==='p' ? '200' : (it.id==='tm' ? '50' : tk[it.id]));
+                    let actNum = cleanNum(act);
+                    let tgtNum = cleanNum(tgtVal);
+                    let acv = (tgtNum > 0) ? Math.round((actNum/tgtNum)*100) : 0;
+                    
+                    // Tambahkan K di laporan WA khusus untuk Pulsa agar rapi
+                    let displayAct = it.isPulsa ? act + "k" : act;
+                    let displayTgt = it.isPulsa ? tgtVal + "k" : tgtVal;
+                    
+                    res += `${i+1}.${tk.n}/${displayTgt}/${displayAct}/${acv}%\n`;
                 } else {
-                    res += `${i+1}.${tk.n} /${act}\n`;
+                    res += `${i+1}.${tk.n}/${act}\n`;
                 }
             });
         });
@@ -197,6 +193,13 @@
         el.select(); document.execCommand('copy');
         document.body.removeChild(el);
         showToast("Laporan Disalin!");
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toast-msg').innerText = msg;
+        t.style.bottom = '30px';
+        setTimeout(() => { t.style.bottom = '-100px'; }, 2000);
     }
 </script>
 </body>

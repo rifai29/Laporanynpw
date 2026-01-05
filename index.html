@@ -2,50 +2,85 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Pak Fadholi - Pagi V4.7</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Generator Alfamidi - Pak Fadholi</title>
     <style>
-        :root { --navy: #1e3a8a; --bg: #f4f7fa; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 10px; }
-        .container { max-width: 1000px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: var(--navy); color: white; padding: 15px; text-align: center; }
-        .section { padding: 15px; border-bottom: 1px solid #eee; }
-        textarea { width: 100%; height: 120px; border: 2px solid #ddd; border-radius: 8px; padding: 10px; font-size: 13px; }
-        .btn { border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; padding: 12px; }
-        .btn-process { background: #e2e8f0; color: var(--navy); margin-top: 10px; }
-        .table-wrapper { overflow-x: auto; padding: 10px; }
-        table { width: 100%; border-collapse: collapse; min-width: 900px; }
-        th { background: #f8fafc; padding: 8px; border-bottom: 2px solid var(--navy); color: var(--navy); font-size: 10px; }
-        td { padding: 5px; border-bottom: 1px solid #eee; text-align: center; font-size: 12px; }
-        .toko-name { font-weight: bold; color: #444; text-align: left; }
-        .target-label { color: #94a3b8; font-size: 10px; display: block; }
-        input { width: 85%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; text-align: center; font-weight: bold; }
-        .btn-copy { background: #059669; color: white; font-size: 16px; margin: 15px; width: calc(100% - 30px); }
+        :root { 
+            --midi-red: #b91c1c; 
+            --midi-cream: #fefce8; 
+            --midi-border: #fee2e2;
+            --text-main: #334155;
+            --bg: #f8fafc; 
+        }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { background: var(--bg); margin: 0; padding: 0; color: var(--text-main); }
+        
+        .header { background: var(--midi-red); color: white; padding: 16px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header h3 { margin: 0; font-size: 15px; letter-spacing: 1px; }
+
+        .main-content { padding: 12px; max-width: 600px; margin: auto; }
+
+        .input-card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid #e2e8f0; }
+        textarea { width: 100%; height: 100px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; font-size: 14px; background: #fcfcfc; resize: none; outline: none; }
+        
+        .btn-process { background: #f1f5f9; color: var(--midi-red); border: 1px solid #cbd5e1; border-radius: 8px; font-weight: 700; width: 100%; padding: 12px; margin-top: 10px; cursor: pointer; }
+
+        .table-container { background: white; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; }
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { border-collapse: collapse; min-width: 1200px; } 
+        th { background: #f8fafc; padding: 12px 5px; border-bottom: 2px solid var(--midi-border); color: #64748b; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+        td { padding: 8px 4px; border-bottom: 1px solid #f1f5f9; text-align: center; }
+        
+        .toko-name { font-weight: 700; color: var(--midi-red); text-align: center; font-size: 12px; position: sticky; left: 0; background: var(--midi-cream); z-index: 10; border-right: 1px solid var(--midi-border); width: 70px; }
+        .target-label { color: #94a3b8; font-size: 9px; display: block; margin-bottom: 2px; }
+        input[type="text"] { width: 80px; padding: 8px 2px; border: 1px solid #e2e8f0; border-radius: 6px; text-align: center; font-weight: 700; font-size: 14px; }
+
+        .copy-container { padding: 20px 0; }
+        .btn-copy { background: var(--midi-red); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; padding: 18px; font-size: 16px; box-shadow: 0 4px 15px rgba(185, 28, 28, 0.2); }
+
+        /* Notifikasi Modern */
+        #toast {
+            position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
+            background: #231f20; color: white; padding: 14px 28px; border-radius: 50px;
+            display: flex; align-items: center; gap: 12px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 999; box-shadow: 0 10px 30px rgba(0,0,0,0.3); font-weight: 600;
+        }
+        #toast.show { bottom: 30px; }
+        .dot { height: 10px; width: 10px; background-color: #fbbf24; border-radius: 50%; display: inline-block; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header"><h3 style="margin:0">GENERATOR LAPORAN PAGI V4.7</h3></div>
-    <div class="section">
-        <textarea id="rawInput" placeholder="Tempel laporan di sini..."></textarea>
+<div class="header"><h3>GENERATOR LAPORAN MIDI</h3></div>
+
+<div class="main-content">
+    <div class="input-card">
+        <textarea id="rawInput" placeholder="Tempel laporan mentah di sini..."></textarea>
         <button class="btn btn-process" onclick="importData()">PROSES DATA</button>
     </div>
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>TOKO</th><th>SALES</th><th>AQUA</th><th>DK</th><th>GRN</th><th>LFB</th><th>PEP</th><th>SUN</th><th>FRT</th><th>TTM</th><th>PLS</th><th>CSB</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+
+    <div class="table-container">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>TOKO</th><th>SALES</th><th>AQUA</th><th>DUA KELINCI</th><th>GARNIER</th><th>LIFEBUOY</th><th>PEPSODENT</th><th>SUNLIGHT</th><th>FRUIT</th><th>TTM</th><th>PULSA</th><th>CASHBACK</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
     </div>
-    <button class="btn btn-copy" onclick="copyWA()">SALIN KE WHATSAPP</button>
+
+    <div class="copy-container">
+        <button class="btn btn-copy" onclick="copyWA()">SALIN LAPORAN KE WHATSAPP</button>
+    </div>
 </div>
 
+<div id="toast"><span class="dot"></span> <span id="toast-msg">Laporan Berhasil Disalin!</span></div>
+
 <script>
-    // Data Toko & Target Pagi
     const dataToko = [
         { n: "ANBA", s: "17.599.926", aq: "55", dk: "5", gr: "1", lf: "1", pp: "2", sn: "2", tm: "50" },
         { n: "YNPW", s: "21.645.276", aq: "33", dk: "4", gr: "1", lf: "1", pp: "5", sn: "4", tm: "50" },
@@ -67,36 +102,38 @@
             <td><span class="target-label">${tk.aq}</span><input type="text" id="aq_${i}"></td>
             <td><span class="target-label">${tk.dk}</span><input type="text" id="dk_${i}"></td>
             <td><span class="target-label">${tk.gr}</span><input type="text" id="gr_${i}"></td>
-            <td><span class="target-label">${tk.lf || '-'}</span><input type="text" id="lf_${i}"></td>
+            <td><span class="target-label">${tk.lf}</span><input type="text" id="lf_${i}"></td>
             <td><span class="target-label">${tk.pp}</span><input type="text" id="pp_${i}"></td>
             <td><span class="target-label">${tk.sn}</span><input type="text" id="sn_${i}"></td>
-            <td><span class="target-label">-</span><input type="text" id="f_${i}"></td>
+            <td><span class="target-label">0</span><input type="text" id="f_${i}"></td>
             <td><span class="target-label">${tk.tm}</span><input type="text" id="tm_${i}"></td>
             <td><span class="target-label">200k</span><input type="text" id="p_${i}"></td>
-            <td><span class="target-label">-</span><input type="text" id="cs_${i}"></td>
+            <td><span class="target-label">0</span><input type="text" id="cs_${i}"></td>
         </tr>`;
     });
 
-    function cleanNum(val, isPulsa = false) {
-        if(!val || val === "-" || val === "" || val === "0") return 0;
-        let s = val.toString().toLowerCase().trim();
-        let n = parseFloat(s.replace(/[^\d]/g, '')) || 0;
-        if (isPulsa && !s.includes('k') && n > 0 && n < 1000) return n * 1000;
-        if (s.includes('k')) return n * 1000;
-        return n;
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-msg').innerText = msg;
+        toast.classList.add('show');
+        setTimeout(() => { toast.classList.remove('show'); }, 2000);
+    }
+
+    function cleanNum(val) {
+        if(!val) return 0;
+        let s = val.toString().replace(/[^\d]/g, '');
+        return parseFloat(s) || 0;
     }
 
     function importData() {
         const raw = document.getElementById('rawInput').value.toUpperCase();
+        if(!raw) return;
         const lines = raw.split('\n');
         let mode = "s";
-
         lines.forEach(line => {
             let row = line.trim();
-            if(!row) return;
-
             if(row.includes("AQUA")) mode = "aq";
-            else if(row.includes("DUA KELINCI")) mode = "dk";
+            else if(row.includes("KELINCI")) mode = "dk";
             else if(row.includes("GARNIER")) mode = "gr";
             else if(row.includes("LIFEBUOY")) mode = "lf";
             else if(row.includes("PEPSODENT")) mode = "pp";
@@ -105,17 +142,15 @@
             else if(row.includes("TTM")) mode = "tm";
             else if(row.includes("PULSA")) mode = "p";
             else if(row.includes("CASHBACK")) mode = "cs";
-            else if(row.includes("//") && !row.includes("TOKO:")) mode = "s";
-
+            
             dataToko.forEach((tk, i) => {
                 if(row.includes(tk.n)) {
-                    let parts = row.split(/[\/\s]+/).filter(v => v.trim() !== "" && !v.includes('%') && !v.includes('.'));
-                    let lastVal = parts[parts.length - 1];
-                    if(!isNaN(cleanNum(lastVal))) document.getElementById(`${mode}_${i}`).value = lastVal;
+                    let val = row.split('/').pop().trim();
+                    document.getElementById(`${mode}_${i}`).value = val;
                 }
             });
         });
-        alert("Proses Selesai.");
+        showToast("Data Siap!");
     }
 
     function copyWA() {
@@ -124,35 +159,35 @@
         let res = `*LAPORAN ITEM FOKUS PAGI AREA PAK FADHOLI*\n${d.getDate()} ${bln[d.getMonth()]} ${d.getFullYear()}\n\nTOKO: target//act//acv\n`;
         
         dataToko.forEach((tk, i) => {
-            let act = document.getElementById(`s_${i}`).value;
+            let act = document.getElementById(`s_${i}`).value || "0";
             let actNum = cleanNum(act);
-            let row = `${i+1}.${tk.n} // ${tk.s}/${act || "0"}`;
-            if(act && actNum > 0) row += `/${Math.round((actNum/cleanNum(tk.s))*100)}%`;
+            let row = `${i+1}.${tk.n} // ${tk.s}/${act}`;
+            if(actNum > 0) row += `/${Math.round((actNum/cleanNum(tk.s))*100)}%`;
             res += row + "\n";
         });
 
         const items = [
-            {n:"AQUA 600ml/1.5l", id:"aq", e:"🍶"}, {n:"Dua Kelinci", id:"dk", e:"🥜🐰"},
-            {n:"Garnier FF", id:"gr", e:"🚿💆🏻‍♀️"}, {n:"Lifebuoy", id:"lf", e:"🚿🛁"},
-            {n:"Pepsodent", id:"pp", e:"🪥🚰"}, {n:"Sunlight", id:"sn", e:"🍽️🧼"},
-            {n:"CUT FRUIT", id:"f", e:"🍍🍉", s:true}, {n:"TTM", id:"tm", e:"🔥🔥"},
-            {n:"PULSA", id:"p", e:"🏴‍☠️🏴‍☠️"}, {n:"CASHBACK", id:"cs", e:"✨✨", s:true}
+            {n:"AQUA 600ml/1.5l", id:"aq", e:"🍶", full:true},
+            {n:"Dua Kelinci", id:"dk", e:"🥜🐰", full:true},
+            {n:"Garnier FF", id:"gr", e:"🚿💆🏻‍♀️", full:true},
+            {n:"Lifebuoy", id:"lf", e:"🚿🛁", full:true},
+            {n:"Pepsodent", id:"pp", e:"🪥🚰", full:true},
+            {n:"Sunlight", id:"sn", e:"🍽️🧼", full:true},
+            {n:"CUT FRUIT", id:"f", e:"🍍🍉", full:false},
+            {n:"TTM", id:"tm", e:"🔥🔥", full:true},
+            {n:"PULSA", id:"p", e:"🏴‍☠️🏴‍☠️", full:true},
+            {n:"CASHBACK", id:"cs", e:"✨✨", full:false}
         ];
 
         items.forEach(it => {
             res += `\n*${it.e} ${it.n} ${it.e}*\n\n`;
             dataToko.forEach((tk, i) => {
-                let act = document.getElementById(`${it.id}_${i}`).value;
-                let tgt = (it.id==='p'?'200k':(it.id==='tm'?'50':tk[it.id]));
-                if(it.s) {
-                    res += `${i+1}.${tk.n} /${act || "0"}\n`;
+                let act = document.getElementById(`${it.id}_${i}`).value || "0";
+                if(it.full) {
+                    let tgt = (it.id==='p'?'200k':(it.id==='tm'?'50':tk[it.id]));
+                    res += `${i+1}.${tk.n}/${tgt}/${act}\n`;
                 } else {
-                    let row = `${i+1}.${tk.n}/${tgt || '0'}/${act || "0"}`;
-                    if(act && cleanNum(act, it.id==='p') > 0 && cleanNum(tgt) > 0) {
-                        let per = Math.round((cleanNum(act, it.id==='p')/cleanNum(tgt, it.id==='p'))*100);
-                        row += `/${per}%`;
-                    }
-                    res += row + "\n";
+                    res += `${i+1}.${tk.n} /${act}\n`;
                 }
             });
         });
@@ -161,7 +196,7 @@
         el.value = res; document.body.appendChild(el);
         el.select(); document.execCommand('copy');
         document.body.removeChild(el);
-        alert("Laporan Tersalin!");
+        showToast("Laporan Disalin!");
     }
 </script>
 </body>

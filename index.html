@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generator Pak Fadholi - V4.7</title>
+    <title>Generator Pak Fadholi - Pagi V4.7</title>
     <style>
         :root { --navy: #1e3a8a; --bg: #f4f7fa; }
         body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 10px; }
@@ -14,8 +14,8 @@
         .btn { border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; padding: 12px; }
         .btn-process { background: #e2e8f0; color: var(--navy); margin-top: 10px; }
         .table-wrapper { overflow-x: auto; padding: 10px; }
-        table { width: 100%; border-collapse: collapse; min-width: 850px; }
-        th { background: #f8fafc; padding: 8px; border-bottom: 2px solid var(--navy); color: var(--navy); font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th { background: #f8fafc; padding: 8px; border-bottom: 2px solid var(--navy); color: var(--navy); font-size: 10px; }
         td { padding: 5px; border-bottom: 1px solid #eee; text-align: center; font-size: 12px; }
         .toko-name { font-weight: bold; color: #444; text-align: left; }
         .target-label { color: #94a3b8; font-size: 10px; display: block; }
@@ -26,7 +26,7 @@
 <body>
 
 <div class="container">
-    <div class="header"><h3 style="margin:0">GENERATOR LAPORAN V4.7</h3></div>
+    <div class="header"><h3 style="margin:0">GENERATOR LAPORAN PAGI V4.7</h3></div>
     <div class="section">
         <textarea id="rawInput" placeholder="Tempel laporan di sini..."></textarea>
         <button class="btn btn-process" onclick="importData()">PROSES DATA</button>
@@ -35,7 +35,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>TOKO</th><th>SALES</th><th>CHT</th><th>ICH</th><th>RNS</th><th>TOP</th><th>FRT</th><th>TTM</th><th>PLS</th><th>CSB</th>
+                    <th>TOKO</th><th>SALES</th><th>AQUA</th><th>DK</th><th>GRN</th><th>LFB</th><th>PEP</th><th>SUN</th><th>FRT</th><th>TTM</th><th>PLS</th><th>CSB</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -45,17 +45,18 @@
 </div>
 
 <script>
+    // Data Toko & Target Pagi
     const dataToko = [
-        { n: "ANBA", s: "17.599.926", c: "16", i: "5", r: "1", tc: "1", tm: "50" },
-        { n: "YNPW", s: "21.645.276", c: "17", i: "7", r: "1", tc: "2", tm: "50" },
-        { n: "GDGN", s: "25.401.388", c: "17", i: "7", r: "2", tc: "2", tm: "50" },
-        { n: "GRGB", s: "28.622.850", c: "13", i: "6", r: "2", tc: "2", tm: "50" },
-        { n: "PLMN", s: "21.523.517", c: "23", i: "5", r: "2", tc: "2", tm: "50" },
-        { n: "FMI",  s: "25.512.077", c: "15", i: "4", r: "3", tc: "4", tm: "50" },
-        { n: "WMI",  s: "17.526.288", c: "15", i: "7", r: "2", tc: "2", tm: "50" },
-        { n: "PDA",  s: "21.904.787", c: "17", i: "6", r: "2", tc: "2", tm: "50" },
-        { n: "KTL",  s: "15.492.335", c: "12", i: "6", r: "1", tc: "1", tm: "50" },
-        { n: "CRLW", s: "15.421.747", c: "10", i: "5", r: "1", tc: "2", tm: "50" }
+        { n: "ANBA", s: "17.599.926", aq: "55", dk: "5", gr: "1", lf: "1", pp: "2", sn: "2", tm: "50" },
+        { n: "YNPW", s: "21.645.276", aq: "33", dk: "4", gr: "1", lf: "1", pp: "5", sn: "4", tm: "50" },
+        { n: "GDGN", s: "25.401.388", aq: "23", dk: "4", gr: "1", lf: "1", pp: "5", sn: "5", tm: "50" },
+        { n: "GRGB", s: "28.622.850", aq: "34", dk: "6", gr: "1", lf: "1", pp: "6", sn: "8", tm: "50" },
+        { n: "PLMN", s: "21.523.517", aq: "25", dk: "5", gr: "1", lf: "0", pp: "6", sn: "8", tm: "50" },
+        { n: "FMI",  s: "25.512.077", aq: "30", dk: "4", gr: "1", lf: "2", pp: "5", sn: "7", tm: "50" },
+        { n: "WMI",  s: "17.526.288", aq: "24", dk: "3", gr: "1", lf: "1", pp: "4", sn: "4", tm: "50" },
+        { n: "PDA",  s: "21.904.787", aq: "35", dk: "4", gr: "1", lf: "2", pp: "6", sn: "3", tm: "50" },
+        { n: "KTL",  s: "15.492.335", aq: "32", dk: "4", gr: "1", lf: "1", pp: "12", sn: "2", tm: "50" },
+        { n: "CRLW", s: "15.421.747", aq: "55", dk: "6", gr: "1", lf: "1", pp: "12", sn: "3", tm: "25" }
     ];
 
     const tbody = document.getElementById('tableBody');
@@ -63,10 +64,12 @@
         tbody.innerHTML += `<tr>
             <td class="toko-name">${tk.n}</td>
             <td><span class="target-label">${tk.s}</span><input type="text" id="s_${i}"></td>
-            <td><span class="target-label">${tk.c}</span><input type="text" id="c_${i}"></td>
-            <td><span class="target-label">${tk.i}</span><input type="text" id="i_${i}"></td>
-            <td><span class="target-label">${tk.r}</span><input type="text" id="r_${i}"></td>
-            <td><span class="target-label">${tk.tc}</span><input type="text" id="tc_${i}"></td>
+            <td><span class="target-label">${tk.aq}</span><input type="text" id="aq_${i}"></td>
+            <td><span class="target-label">${tk.dk}</span><input type="text" id="dk_${i}"></td>
+            <td><span class="target-label">${tk.gr}</span><input type="text" id="gr_${i}"></td>
+            <td><span class="target-label">${tk.lf || '-'}</span><input type="text" id="lf_${i}"></td>
+            <td><span class="target-label">${tk.pp}</span><input type="text" id="pp_${i}"></td>
+            <td><span class="target-label">${tk.sn}</span><input type="text" id="sn_${i}"></td>
             <td><span class="target-label">-</span><input type="text" id="f_${i}"></td>
             <td><span class="target-label">${tk.tm}</span><input type="text" id="tm_${i}"></td>
             <td><span class="target-label">200k</span><input type="text" id="p_${i}"></td>
@@ -92,10 +95,12 @@
             let row = line.trim();
             if(!row) return;
 
-            if(row.includes("CHITATO")) mode = "c";
-            else if(row.includes("ICHITAN")) mode = "i";
-            else if(row.includes("RINSO")) mode = "r";
-            else if(row.includes("TOP COFFEE")) mode = "tc";
+            if(row.includes("AQUA")) mode = "aq";
+            else if(row.includes("DUA KELINCI")) mode = "dk";
+            else if(row.includes("GARNIER")) mode = "gr";
+            else if(row.includes("LIFEBUOY")) mode = "lf";
+            else if(row.includes("PEPSODENT")) mode = "pp";
+            else if(row.includes("SUNLIGHT")) mode = "sn";
             else if(row.includes("FRUIT")) mode = "f";
             else if(row.includes("TTM")) mode = "tm";
             else if(row.includes("PULSA")) mode = "p";
@@ -104,61 +109,46 @@
 
             dataToko.forEach((tk, i) => {
                 if(row.includes(tk.n)) {
-                    let afterName = row.split(tk.n)[1] || "";
-                    let isTrailingSlash = afterName.trim().endsWith("/");
-                    let parts = afterName.split(/[\/\s]+/).filter(v => v.trim() !== "" && !v.includes('%'));
-
-                    let result = "";
-                    if (!isTrailingSlash && parts.length > 0) {
-                        if (mode === 's') {
-                            if (parts.length >= 2) result = parts[1];
-                        } else {
-                            let lastVal = parts[parts.length - 1];
-                            let tgt = (mode==='p'?'200':(mode==='tm'?'50':tk[mode]));
-                            if (!(parts.length === 1 && lastVal === tgt)) {
-                                result = lastVal;
-                            }
-                        }
-                    }
-                    document.getElementById(`${mode}_${i}`).value = result;
+                    let parts = row.split(/[\/\s]+/).filter(v => v.trim() !== "" && !v.includes('%') && !v.includes('.'));
+                    let lastVal = parts[parts.length - 1];
+                    if(!isNaN(cleanNum(lastVal))) document.getElementById(`${mode}_${i}`).value = lastVal;
                 }
             });
         });
-        alert("Proses Selesai. Target tanpa hasil otomatis diabaikan.");
+        alert("Proses Selesai.");
     }
 
     function copyWA() {
         let d = new Date();
         const bln = ["JANUARI","FEBRUARI","MARET","APRIL","MEI","JUNI","JULI","AGUSTUS","SEPTEMBER","OKTOBER","NOVEMBER","DESEMBER"];
-        let res = `*LAPORAN ITEM FOKUS SIANG AREA PAK FADHOLI*\n${d.getDate()} ${bln[d.getMonth()]} ${d.getFullYear()}\n\nTOKO: target//act//acv\n`;
+        let res = `*LAPORAN ITEM FOKUS PAGI AREA PAK FADHOLI*\n${d.getDate()} ${bln[d.getMonth()]} ${d.getFullYear()}\n\nTOKO: target//act//acv\n`;
         
         dataToko.forEach((tk, i) => {
             let act = document.getElementById(`s_${i}`).value;
             let actNum = cleanNum(act);
             let row = `${i+1}.${tk.n} // ${tk.s}/${act || "0"}`;
-            // MENGGUNAKAN Math.round() UNTUK ANGKA BULAT
             if(act && actNum > 0) row += `/${Math.round((actNum/cleanNum(tk.s))*100)}%`;
             res += row + "\n";
         });
 
         const items = [
-            {n:"CHITATO", id:"c", e:"🐂"}, {n:"ICHITAN", id:"i", e:"🍶"},
-            {n:"RINSO", id:"r", e:"🧼"}, {n:"TOP COFFEE", id:"tc", e:"☕"},
+            {n:"AQUA 600ml/1.5l", id:"aq", e:"🍶"}, {n:"Dua Kelinci", id:"dk", e:"🥜🐰"},
+            {n:"Garnier FF", id:"gr", e:"🚿💆🏻‍♀️"}, {n:"Lifebuoy", id:"lf", e:"🚿🛁"},
+            {n:"Pepsodent", id:"pp", e:"🪥🚰"}, {n:"Sunlight", id:"sn", e:"🍽️🧼"},
             {n:"CUT FRUIT", id:"f", e:"🍍🍉", s:true}, {n:"TTM", id:"tm", e:"🔥🔥"},
             {n:"PULSA", id:"p", e:"🏴‍☠️🏴‍☠️"}, {n:"CASHBACK", id:"cs", e:"✨✨", s:true}
         ];
 
         items.forEach(it => {
-            res += `\n*${it.e}${it.n}${it.e}*\n\n`;
+            res += `\n*${it.e} ${it.n} ${it.e}*\n\n`;
             dataToko.forEach((tk, i) => {
                 let act = document.getElementById(`${it.id}_${i}`).value;
                 let tgt = (it.id==='p'?'200k':(it.id==='tm'?'50':tk[it.id]));
                 if(it.s) {
                     res += `${i+1}.${tk.n} /${act || "0"}\n`;
                 } else {
-                    let row = `${i+1}.${tk.n}/${tgt}/${act || "0"}`;
-                    if(act && cleanNum(act, it.id==='p') > 0) {
-                        // MENGGUNAKAN Math.round() UNTUK ANGKA BULAT
+                    let row = `${i+1}.${tk.n}/${tgt || '0'}/${act || "0"}`;
+                    if(act && cleanNum(act, it.id==='p') > 0 && cleanNum(tgt) > 0) {
                         let per = Math.round((cleanNum(act, it.id==='p')/cleanNum(tgt, it.id==='p'))*100);
                         row += `/${per}%`;
                     }

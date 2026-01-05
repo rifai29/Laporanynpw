@@ -119,6 +119,8 @@
                     let actual = "0";
                     if (mode === 'f' || mode === 'cs') {
                         if (parts.length >= 2) actual = parts[1].replace(/[^0-9]/g, '');
+                    } else if (mode === 's') {
+                        if (parts.length >= 3) actual = parts[2].replace(/[^0-9]/g, '');
                     } else {
                         if (parts.length >= 3) actual = parts[2].replace(/[^0-9]/g, '');
                     }
@@ -160,13 +162,14 @@
                 
                 if(it.id === 's') {
                     let acv = document.getElementById(`acv_${it.id}_${i}`).innerText;
+                    // MERAPATKAN SPASI SALES
                     if (actNum === 0) {
-                        res += `${i+1}.${tk.n} // ${tk.s} /\n`;
+                        res += `${i+1}.${tk.n}//${tk.s}/\n`;
                     } else {
-                        res += `${i+1}.${tk.n} // ${tk.s} / ${formatNumber(actNum)} / ${acv}\n`;
+                        res += `${i+1}.${tk.n}//${tk.s}/${formatNumber(actNum)}/${acv}\n`;
                     }
                 } else if(it.s) {
-                    res += `${i+1}.${tk.n} /${actNum === 0 ? '' : actNum}\n`; 
+                    res += `${i+1}.${tk.n}/ ${actNum === 0 ? '' : actNum}/\n`; 
                 } else {
                     let tgtDisp = it.p ? "200k" : (it.id==='tm' ? (tk.n==="CRLW"?"25":"50") : (tk[it.id]));
                     let acv = document.getElementById(`acv_${it.id}_${i}`).innerText;

@@ -36,7 +36,7 @@
 
 <div class="main-content">
     <div class="card">
-        <textarea id="rawInput" placeholder="Tempel laporan WA di sini..."></textarea>
+        <textarea id="rawInput" placeholder="Tempel laporan di sini..."></textarea>
         <div class="button-group">
             <button class="btn btn-process" onclick="importData()">PROSES</button>
             <button class="btn btn-copy" onclick="copyWA()">SALIN</button>
@@ -90,7 +90,7 @@
         let val = document.getElementById(`${f}_${i}`).value.replace(/[^0-9]/g, '');
         let a = parseInt(val) || 0;
         let t = parseInt(target.replace(/[^0-9]/g, '')) || 0;
-        if(t > 0) document.getElementById(`acv_${f}_${i}`).innerText = Math.round((a/t)*100) + "%";
+        document.getElementById(`acv_${f}_${i}`).innerText = (t > 0 && a > 0) ? Math.round((a/t)*100) + "%" : "0%";
     }
 
     function clearAll() {
@@ -115,17 +115,20 @@
                 if(row.includes(tk.n)) {
                     let parts = row.split('/').map(p => p.trim()).filter(p => p !== "");
                     let actual = "0";
-                    const slashCount = (row.match(/\//g) || []).length;
 
-                    if (slashCount >= 2) {
-                        if (parts.length >= 3) {
-                            actual = parts[2].replace(/[^0-9]/g, '');
-                        }
+                    // Logika Per Kategori
+                    if (mode === 'f' || mode === 'cs') {
+                        // Format Fruit/Cashback: TOKO / ACTUAL (Parts[1])
+                        if (parts.length >= 2) actual = parts[1].replace(/[^0-9]/g, '');
+                    } else if (mode === 's') {
+                        // Format Sales: TOKO // TARGET / ACTUAL (Parts[2])
+                        if (parts.length >= 3) actual = parts[2].replace(/[^0-9]/g, '');
                     } else {
-                        actual = "0";
+                        // Format Item Lain: TOKO / TARGET / ACTUAL (Parts[2])
+                        if (parts.length >= 3) actual = parts[2].replace(/[^0-9]/g, '');
                     }
 
-                    document.getElementById(`${mode}_${i}`).value = actual;
+                    document.getElementById(`${mode}_${i}`).value = (actual === "0" || actual === "") ? "" : actual;
                     let targetVal = (mode==='p')?'200':(mode==='tm'?(tk.n==='CRLW'?'25':'50'):(tk[mode]||'0'));
                     calc(i, mode, targetVal);
                 }
@@ -140,31 +143,39 @@
         let res = `*LAPORAN ITEM FOKUS PAGI AREA PAK FADHOLI*\n${d.getDate()} ${bln[d.getMonth()]} ${d.getFullYear()}\n\n`;
         
         const items = [
-            {n:"SALES", id:"s", l:"", r:""},
-            {n:"AQUA 600ml/1.5l", id:"aq", l:"🍶", r:"🍶"}, 
-            {n:"Dua Kelinci", id:"dk", l:"🥜", r:"🐰"},
-            {n:"Garnier FF", id:"gr", l:"🚿", r:"💆🏻‍♀️"}, 
-            {n:"Lifebuoy", id:"lf", l:"🚿", r:"🛁"},
-            {n:"Pepsodent", id:"pp", l:"🪥", r:"🚰"}, 
-            {n:"Sunlight", id:"sn", l:"🍽️", r:"🧼"},
-            {n:"CUT FRUIT", id:"f", l:"🍍🍉", r:"🍉🍍", s:true}, 
-            {n:"TTM", id:"tm", l:"🔥🔥", r:"🔥🔥"},
-            {n:"PULSA", id:"p", l:"🏴‍☠️🏴‍☠️", r:"🏴‍☠️🏴‍CEO", p:true}, 
-            {n:"CASHBACK", id:"cs", l:"✨✨", r:"✨✨", s:true}
+            {n:"SALES", id:"s", h:"TOKO: target//act//acv\n"},
+            {n:"AQUA 600ml/1.5l", id:"aq", l:"*🍶", r:"🍶*"}, 
+            {n:"Dua Kelinci", id:"dk", l:"*🥜", r:"🐰*"},
+            {n:"Garnier FF", id:"gr", l:"*🚿", r:"💆🏻‍♀️*"}, 
+            {n:"Lifebuoy", id:"lf", l:"*🚿", r:"🛁*"},
+            {n:"Pepsodent", id:"pp", l:"*🪥", r:"🚰*"}, 
+            {n:"Sunlight", id:"sn", l:"*🍽️", r:"🧼*"},
+            {n:"CUT FRUIT", id:"f", l:"🍍🍉 *", r:"* 🍉🍍", s:true}, 
+            {n:"TTM", id:"tm", l:"🔥🔥 *", r:"* 🔥🔥"}, 
+            {n:"PULSA", id:"p", l:"🏴‍☠️🏴‍☠️ *", r:"* 🏴‍☠️🏴‍☠️", p:true}, 
+            {n:"CASHBACK", id:"cs", l:"✨✨ *", r:"* ✨✨", s:true}
         ];
 
         items.forEach(it => {
-            if(it.id === 's') { res += `TOKO: target//act//acv\n`; } 
-            else { res += `\n*${it.l}${it.n}${it.r}*\n\n`; }
+            if(it.id === 's') { res += it.h; } 
+            else { res += `\n${it.l}${it.n}${it.r}\n\n`; }
 
             tokoList.forEach((tk, i) => {
-                let act = document.getElementById(`${it.id}_${i}`).value || "0";
-                if(it.s) { 
-                    res += `${i+1}.${tk.n} /${act}\n`; 
+                let actRaw = document.getElementById(`${it.id}_${i}`).value || "";
+                let actNum = parseInt(actRaw.replace(/[^0-9]/g, '')) || 0;
+                
+                if(it.s) {
+                    res += `${i+1}.${tk.n} /${actNum === 0 ? '' : actNum}\n`; 
                 } else {
                     let tgtDisp = it.p ? "200k" : (it.id==='tm' ? (tk.n==="CRLW"?"25":"50") : (it.id==='s'?tk.s:tk[it.id]));
                     let acv = document.getElementById(`acv_${it.id}_${i}`).innerText;
-                    res += `${i+1}.${tk.n}/${tgtDisp}/${it.p?act+'k':act}/${acv}\n`;
+                    let actDisp = it.p ? (actNum === 0 ? '0k' : actNum + 'k') : actNum;
+                    
+                    if (actNum === 0) {
+                        res += `${i+1}.${tk.n}/${tgtDisp}/\n`;
+                    } else {
+                        res += `${i+1}.${tk.n}/${tgtDisp}/${actDisp}/${acv}\n`;
+                    }
                 }
             });
         });

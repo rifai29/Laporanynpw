@@ -3,133 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Generator Area Pak Fadholi</title>
+    <title>Generator Area Pak Fadholi v2.4.0</title>
     <style>
-        :root { --midi-red: #cc0000; --midi-yellow: #ffcc00; --dark: #1e293b; --gray: #64748b; }
+        :root { --midi-red: #cc0000; --midi-yellow: #ffcc00; --dark: #1e293b; --gray: #64748b; --success: #059669; --wa-green: #25D366; }
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: #f1f5f9; margin: 0; padding: 0; }
+        body { background: #f1f5f9; margin: 0; padding: 0; padding-bottom: 110px; }
+        
         .header { background: var(--midi-red); color: white; padding: 12px; text-align: center; font-weight: bold; border-bottom: 4px solid var(--midi-yellow); }
+        .version-banner { background: #f8fafc; text-align: center; padding: 5px; font-size: 10px; color: #64748b; border-bottom: 1px solid #e2e8f0; }
+
+        /* Modal Pop-up Versi 2.4.0 (Limit 5 List) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
+        .modal-box { background: white; border-radius: 15px; width: 100%; max-width: 320px; overflow: hidden; animation: zoomIn 0.3s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-header { background: var(--dark); color: white; padding: 12px; text-align: center; font-weight: bold; font-size: 14px; }
+        .modal-body { padding: 18px; font-size: 12px; line-height: 1.6; color: #334155; }
+        .change-log { margin: 0; padding-left: 18px; }
+        .change-log li { margin-bottom: 5px; }
+        .btn-ok { background: var(--midi-red); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 90%; margin: 0 5% 15px 5%; }
+        @keyframes zoomIn { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
         .main-content { padding: 8px; }
-        .card { background: white; padding: 10px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 12px; }
-        textarea { width: 100%; height: 80px; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 8px; font-size: 12px; background: #f8fafc; resize: none; }
-        .button-group { display: flex; gap: 5px; margin-top: 10px; }
-        .btn { flex: 1; border: none; border-radius: 8px; padding: 12px 5px; font-weight: bold; font-size: 11px; color: white; cursor: pointer; text-transform: uppercase; }
+        .card { background: white; padding: 12px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 12px; }
+        textarea { width: 100%; height: 80px; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 10px; font-size: 12px; background: #f8fafc; resize: none; }
+        .comment-box { margin-top: 10px; border: 1.5px dashed var(--gray); background: #fff; height: 50px; }
+        
+        .button-group { display: flex; gap: 8px; margin-top: 12px; }
+        .btn { flex: 1; border: none; border-radius: 8px; padding: 14px 5px; font-weight: bold; font-size: 11px; color: white; cursor: pointer; text-transform: uppercase; }
         .btn-process { background: var(--midi-red); }
         .btn-copy { background: var(--dark); }
         .btn-clear { background: var(--gray); }
+
         .table-wrapper { overflow-x: auto; background: white; border-radius: 10px; border: 1px solid #e2e8f0; }
         table { border-collapse: collapse; min-width: 1100px; width: 100%; }
-        th { background: #f8fafc; padding: 10px; font-size: 10px; color: #64748b; }
-        td { padding: 6px 4px; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: top; }
-        .toko-col { font-weight: bold; background: #fffdf2; position: sticky; left: 0; z-index: 10; border-right: 2px solid var(--midi-yellow); min-width: 110px; vertical-align: middle; }
-        .nama-panjang { display: block; font-size: 8px; color: #666; text-transform: uppercase; line-height: 1; }
+        th { background: #f8fafc; padding: 12px 10px; font-size: 10px; color: #64748b; border-bottom: 2px solid #edf2f7; }
+        td { padding: 10px 4px; border-bottom: 1px solid #f1f5f9; text-align: center; vertical-align: top; }
+        .toko-col { font-weight: bold; background: #fffdf2; position: sticky; left: 0; z-index: 10; border-right: 2px solid var(--midi-yellow); min-width: 115px; vertical-align: middle; }
+        .nama-panjang { display: block; font-size: 8px; color: #666; text-transform: uppercase; line-height: 1.2; margin-bottom: 2px; }
         .kode-toko { display: block; font-size: 11px; color: var(--midi-red); }
-        .target-label { display: block; font-size: 9px; color: #94a3b8; font-weight: bold; margin-bottom: 2px; }
-        input[type="text"] { width: 85px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 5px; text-align: center; font-weight: bold; font-size: 12px; }
-        .acv-label { display: block; font-size: 10px; font-weight: bold; color: #059669; margin-top: 3px; }
-        #toast { position: fixed; bottom: -50px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 8px 20px; border-radius: 20px; transition: 0.3s; z-index: 1000; font-size: 11px; }
+        .target-label { display: block; font-size: 9px; color: #94a3b8; font-weight: bold; margin-bottom: 4px; }
+        input[type="text"] { width: 85px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; text-align: center; font-weight: bold; font-size: 12px; }
+        .acv-label { display: block; font-size: 10px; font-weight: bold; color: var(--success); margin-top: 5px; }
+        
+        .float-wa { position: fixed; bottom: 25px; right: 20px; background: #25D366; color: white; padding: 12px 20px; border-radius: 40px; display: flex; align-items: center; gap: 10px; text-decoration: none; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); z-index: 999; border: 1px solid rgba(255,255,255,0.2); }
+        .wa-text { font-size: 11px; font-weight: 800; }
+        #toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 25px; border-radius: 30px; transition: 0.4s; z-index: 1000; font-size: 12px; font-weight: bold; }
     </style>
 </head>
 <body>
 
+<div class="modal-overlay" id="updateModal">
+    <div class="modal-box">
+        <div class="modal-header">RIWAYAT PERUBAHAN v2.4.0</div>
+        <div class="modal-body">
+            <b>Catatan Update (Terbaru):</b>
+            <ul class="change-log">
+                <li><b>v2.4.0:</b> Sistem Pop-up dibatasi maks 5 catatan.</li>
+                <li><b>v2.3.0:</b> Optimalisasi Tombol WA & Banner Versi.</li>
+                <li><b>v2.2.0:</b> Penambahan Kolom Catatan Tambahan.</li>
+                <li><b>v2.1.0:</b> Fix Logika Shift Pagi (00-20) & Siang (21-23).</li>
+                <li><b>v2.0.0:</b> Integrasi Tombol WA Admin & Fitur Copy Baru.</li>
+            </ul>
+        </div>
+        <button class="btn-ok" onclick="closeModal()">SIAAP!</button>
+    </div>
+</div>
+
 <div class="header">GENERATOR AREA PAK FADHOLI</div>
+<div class="version-banner">OFFICIAL VERSION: <b>2.4.0</b></div>
 
 <div class="main-content">
     <div class="card">
-        <textarea id="rawInput" placeholder="Tempel laporan di sini..."></textarea>
+        <textarea id="rawInput" placeholder="Tempel laporan mentah di sini..."></textarea>
+        <textarea id="userComment" class="comment-box" placeholder="Tambah catatan tambahan..."></textarea>
         <div class="button-group">
             <button class="btn btn-process" onclick="importData()">PROSES</button>
             <button class="btn btn-copy" onclick="copyWA()">SALIN</button>
             <button class="btn btn-clear" onclick="clearAll()">HAPUS</button>
         </div>
     </div>
-
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>TOKO</th><th>SALES</th><th>AQUA</th><th>D.KELINCI</th><th>GARNIER</th>
-                    <th>LFBOUY</th><th>PEPSODENT</th><th>SUNLIGHT</th><th>FRUIT</th><th>TTM</th>
-                    <th>PULSA</th><th>CASHBACK</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
-    </div>
+    <div class="table-wrapper" id="tableContent"></div>
 </div>
 
-<div id="toast">Berhasil!</div>
+<a href="https://wa.me/628882741259?text=Lapor%20v2.4.0" class="float-wa" target="_blank">
+    <span class="wa-text">💬 HUBUNGI ADMIN</span>
+</a>
+
+<div id="toast">Berhasil Disalin!</div>
 
 <script>
     const tokoList = [
-        { n: "ANBA", full: "ALUN-ALUN BLORA", s: "17.599.926", aq: "55", dk: "5", gr: "1", lf: "1", pp: "2", sn: "2", tm: "50" },
-        { n: "YNPW", full: "A. YANI PURWODADI", s: "21.645.276", aq: "33", dk: "4", gr: "1", lf: "1", pp: "5", sn: "4", tm: "50" },
-        { n: "GDGN", full: "GODONG GROBOGAN", s: "25.401.388", aq: "23", dk: "4", gr: "1", lf: "1", pp: "5", sn: "5", tm: "50" },
-        { n: "GRGB", full: "GUBUG GROBOGAN", s: "28.622.850", aq: "34", dk: "6", gr: "1", lf: "1", pp: "6", sn: "8", tm: "50" },
-        { n: "PLMN", full: "PLAMONGAN", s: "21.523.517", aq: "25", dk: "5", gr: "1", lf: "1", pp: "6", sn: "8", tm: "50" },
-        { n: "FMI",  full: "FATMAWATI", s: "25.512.077", aq: "30", dk: "4", gr: "1", lf: "2", pp: "5", sn: "7", tm: "50" },
-        { n: "WMI",  full: "WOLTER MONGINSIDI", s: "17.526.288", aq: "24", dk: "3", gr: "1", lf: "1", pp: "4", sn: "4", tm: "50" },
-        { n: "PDA",  full: "PADIRAYA", s: "21.904.787", aq: "35", dk: "4", gr: "1", lf: "2", pp: "6", sn: "3", tm: "50" },
-        { n: "KTL",  full: "KETILENG", s: "15.492.335", aq: "32", dk: "4", gr: "1", lf: "1", pp: "12", sn: "2", tm: "50" },
-        { n: "CRLW", full: "CEPU RONGGOLAWE", s: "15.421.747", aq: "55", dk: "6", gr: "1", lf: "1", pp: "12", sn: "3", tm: "25" }
+        { n: "ANBA", full: "ALUN-ALUN BLORA", s: "17599926", aq: "55", dk: "5", gr: "1", lf: "1", pp: "2", sn: "2", tm: "50" },
+        { n: "YNPW", full: "A. YANI PURWODADI", s: "21645276", aq: "33", dk: "4", gr: "1", lf: "1", pp: "5", sn: "4", tm: "50" },
+        { n: "GDGN", full: "GODONG GROBOGAN", s: "25401388", aq: "23", dk: "4", gr: "1", lf: "1", pp: "5", sn: "5", tm: "50" },
+        { n: "GRGB", full: "GUBUG GROBOGAN", s: "28622850", aq: "34", dk: "6", gr: "1", lf: "1", pp: "6", sn: "8", tm: "50" },
+        { n: "PLMN", full: "PLAMONGAN", s: "21523517", aq: "25", dk: "5", gr: "1", lf: "1", pp: "6", sn: "8", tm: "50" },
+        { n: "FMI",  full: "FATMAWATI", s: "25512077", aq: "30", dk: "4", gr: "1", lf: "2", pp: "5", sn: "7", tm: "50" },
+        { n: "WMI",  full: "WOLTER MONGINSIDI", s: "17526288", aq: "24", dk: "3", gr: "1", lf: "1", pp: "4", sn: "4", tm: "50" },
+        { n: "PDA",  full: "PADIRAYA", s: "21904787", aq: "35", dk: "4", gr: "1", lf: "2", pp: "6", sn: "3", tm: "50" },
+        { n: "KTL",  full: "KETILENG", s: "15492335", aq: "32", dk: "4", gr: "1", lf: "1", pp: "12", sn: "2", tm: "50" },
+        { n: "CRLW", full: "CEPU RONGGOLAWE", s: "15421747", aq: "55", dk: "6", gr: "1", lf: "1", pp: "12", sn: "3", tm: "25" }
     ];
 
     const fields = ['s','aq','dk','gr','lf','pp','sn','f','tm','p','cs'];
-    const tbody = document.getElementById('tableBody');
+    const container = document.getElementById('tableContent');
+    
+    let html = `<table><thead><tr><th>TOKO</th><th>SALES</th><th>AQUA</th><th>D.KELINCI</th><th>GARNIER</th><th>LFBOUY</th><th>PEPSODENT</th><th>SUNLIGHT</th><th>FRUIT</th><th>TTM</th><th>PULSA</th><th>CASHBACK</th></tr></thead><tbody>`;
     tokoList.forEach((tk, i) => {
-        let row = `<tr><td class="toko-col"><span class="nama-panjang">${tk.full}</span><span class="kode-toko">${tk.n}</span></td>`;
+        html += `<tr><td class="toko-col"><span class="nama-panjang">${tk.full}</span><span class="kode-toko">${tk.n}</span></td>`;
         fields.forEach(f => {
-            let targetDisp = (f==='p')?'200k':(f==='tm'?(tk.n==='CRLW'?'25':'50'):(f==='f'?'Fruit':(f==='cs'?'Cash':tk[f])));
-            let targetVal = (f==='p')?'200':(f==='tm'?(tk.n==='CRLW'?'25':'50'):(tk[f]||'0'));
-            row += `<td><span class="target-label">${targetDisp}</span><input type="text" id="${f}_${i}" oninput="calc('${i}','${f}','${targetVal}')"><span id="acv_${f}_${i}" class="acv-label">0%</span></td>`;
+            let tgtDisp = (f==='p')?'200k':(f==='tm'?(tk.n==='CRLW'?'25':'50'):(f==='f'?'Fruit':(f==='cs'?'Cash':(f==='s'?formatNumber(tk[f]):tk[f]))));
+            let tgtVal = (f==='p')?'200':(f==='tm'?(tk.n==='CRLW'?'25':'50'):(tk[f]||'0'));
+            html += `<td><span class="target-label">${tgtDisp}</span><input type="text" id="${f}_${i}" oninput="calc('${i}','${f}','${tgtVal}')"><span id="acv_${f}_${i}" class="acv-label">0%</span></td>`;
         });
-        tbody.innerHTML += row + `</tr>`;
+        html += `</tr>`;
     });
+    container.innerHTML = html + `</tbody></table>`;
 
+    window.onload = () => document.getElementById('updateModal').style.display = 'flex';
+    function closeModal() { document.getElementById('updateModal').style.display = 'none'; }
     function formatNumber(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+    function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.bottom = '35px'; setTimeout(() => t.style.bottom = '-100px', 2000); }
 
     function calc(i, f, target) {
         let val = document.getElementById(`${f}_${i}`).value.replace(/[^0-9]/g, '');
-        let a = parseInt(val) || 0;
-        let t = parseInt(target.replace(/[^0-9]/g, '')) || 0;
-        document.getElementById(`acv_${f}_${i}`).innerText = (t > 0 && a > 0) ? Math.round((a/t)*100) + "%" : "0%";
+        let a = parseInt(val) || 0, t = parseInt(target.replace(/[^0-9]/g, '')) || 0;
+        document.getElementById(`acv_${f}_${i}`).innerText = (t > 0) ? Math.round((a/t)*100) + "%" : "0%";
     }
 
     function clearAll() {
-        document.getElementById('rawInput').value = "";
-        document.querySelectorAll('input').forEach(inp => inp.value = "");
-        document.querySelectorAll('.acv-label').forEach(a => a.innerText = "0%");
-        showToast("DATA DIHAPUS");
+        document.querySelectorAll('textarea, input').forEach(el => el.value = "");
+        document.querySelectorAll('.acv-label').forEach(el => el.innerText = "0%");
+        showToast("BERSIH");
     }
 
     function importData() {
         const text = document.getElementById('rawInput').value.toUpperCase();
+        if(!text) return;
         const lines = text.split('\n');
         let mode = "s";
         const keyMap = { "AQUA":"aq","KELINCI":"dk","GARNIER":"gr","LIFEBUOY":"lf","PEPSODENT":"pp","SUNLIGHT":"sn","FRUIT":"f","TTM":"tm","PULSA":"p","CASHBACK":"cs" };
-
         lines.forEach(line => {
-            let row = line.trim();
-            if(!row) return;
-            for (let key in keyMap) { if(row.includes(key)) mode = keyMap[key]; }
-
+            for (let key in keyMap) if(line.includes(key)) mode = keyMap[key];
             tokoList.forEach((tk, i) => {
-                if(row.includes(tk.n)) {
-                    let parts = row.split('/').map(p => p.trim()).filter(p => p !== "");
-                    let actual = "";
-                    if (mode === 'f' || mode === 'cs') {
-                        if (parts.length >= 2) actual = parts[1];
-                    } else {
-                        if (parts.length >= 3) actual = parts[2];
-                    }
-
-                    let cleaned = actual.replace(/[^0-9]/g, '');
-                    if (mode === 's' && cleaned.length > 9) {
-                        cleaned = cleaned.substring(0, 8);
-                    }
-                    document.getElementById(`${mode}_${i}`).value = cleaned;
-                    let targetVal = (mode==='p')?'200':(mode==='tm'?(tk.n==='CRLW'?'25':'50'):(tk[mode]||'0'));
-                    calc(i, mode, targetVal);
+                if(line.includes(tk.n)) {
+                    let p = line.split('/').map(x => x.trim()).filter(x => x !== "");
+                    let actual = (mode === 'f' || mode === 'cs') ? (p[1] || "") : (p[2] || "");
+                    document.getElementById(`${mode}_${i}`).value = actual.replace(/[^0-9]/g, '');
+                    let tgtV = (mode==='p')?'200':(mode==='tm'?(tk.n==='CRLW'?'25':'50'):(tk[mode]||'0'));
+                    calc(i, mode, tgtV);
                 }
             });
         });
@@ -137,14 +158,9 @@
     }
 
     function copyWA() {
-        const d = new Date();
-        const jam = d.getHours();
+        const d = new Date(), jam = d.getHours();
+        let shift = (jam >= 21) ? "SIANG" : "PAGI";
         const bln = ["JANUARI","FEBRUARI","MARET","APRIL","MEI","JUNI","JULI","AGUSTUS","SEPTEMBER","OKTOBER","NOVEMBER","DESEMBER"];
-        
-        // LOGIKA PENENTUAN PAGI / SIANG
-        let shift = "PAGI";
-        if (jam >= 18) shift = "SIANG"; // Jam 18.00 ke atas masuk laporan siang
-
         let res = `*LAPORAN ITEM FOKUS ${shift} AREA PAK FADHOLI*\n${d.getDate()} ${bln[d.getMonth()]} ${d.getFullYear()}\n\n`;
         
         const items = [
@@ -162,36 +178,28 @@
         ];
 
         items.forEach(it => {
-            if(it.id === 's') { res += it.h; } 
-            else { res += `\n${it.l}${it.n}${it.r}\n\n`; }
-
+            res += (it.id === 's') ? it.h : `\n${it.l}${it.n}${it.r}\n\n`;
             tokoList.forEach((tk, i) => {
                 let actRaw = document.getElementById(`${it.id}_${i}`).value || "";
                 let actNum = parseInt(actRaw.replace(/[^0-9]/g, '')) || 0;
-                
+                let acv = document.getElementById(`acv_${it.id}_${i}`).innerText;
                 if(it.id === 's') {
-                    let acv = document.getElementById(`acv_${it.id}_${i}`).innerText;
-                    if (actNum === 0) { res += `${i+1}.${tk.n}//${tk.s}/\n`; } 
-                    else { res += `${i+1}.${tk.n}//${tk.s}/${formatNumber(actNum)}/${acv}\n`; }
+                    res += `${i+1}.${tk.n}//${formatNumber(tk.s)}/${actNum === 0 ? '' : formatNumber(actNum)}/${actNum === 0 ? '' : acv}\n`;
                 } else if(it.s) {
                     res += `${i+1}.${tk.n} /${actNum === 0 ? '' : formatNumber(actNum)}\n`; 
                 } else {
-                    let tgtDisp = it.p ? "200k" : (it.id==='tm' ? (tk.n==="CRLW"?"25":"50") : (tk[it.id]));
-                    let acv = document.getElementById(`acv_${it.id}_${i}`).innerText;
+                    let tgtDisp = it.p ? "200k" : (it.id==='tm'?(tk.n==="CRLW"?"25":"50"):tk[it.id]);
                     let actDisp = it.p ? (actNum === 0 ? '0k' : actNum + 'k') : actNum;
-                    if (actNum === 0) { res += `${i+1}.${tk.n}/${tgtDisp}/\n`; } 
-                    else { res += `${i+1}.${tk.n}/${tgtDisp}/${actDisp}/${acv}\n`; }
+                    res += `${i+1}.${tk.n}/${tgtDisp}/${actNum === 0 ? '' : actDisp}/${actNum === 0 ? '' : acv}\n`;
                 }
             });
         });
 
+        const note = document.getElementById('userComment').value;
+        if(note) res += `\n*CATATAN:*\n${note}\n`;
+
         const el = document.createElement('textarea'); el.value = res; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
         showToast("LAPORAN " + shift + " DISALIN");
-    }
-
-    function showToast(m) {
-        const t = document.getElementById('toast'); t.innerText = m; t.style.bottom = '20px';
-        setTimeout(() => { t.style.bottom = '-50px'; }, 2000);
     }
 </script>
 </body>

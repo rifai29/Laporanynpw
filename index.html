@@ -1,12 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <meta http-equiv="refresh" content="5;url=https://rifai29.github.io/Semua/">
-    <title>Halaman Telah Pindah</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <style>
+        /* Palet Warna Sesuai Gambar */
+        :root {
+            --bg-color: #f3f7f9;       /* Biru-abu pucat (background layar) */
+            --card-color: #ffffff;     /* Putih bersih (kartu) */
+            --text-main: #3c4858;      /* Abu-abu tua (judul) */
+            --text-muted: #94a3b8;     /* Abu-abu muda (teks tambahan) */
+            --accent-dark: #4e5d6e;    /* Biru-abu gelap (tombol/border) */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 340px;
+            background-color: var(--card-color);
+            padding: 40px 20px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+        }
+
+        .status-tag {
+            display: inline-block;
+            background-color: var(--bg-color);
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        #quote-text {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.6;
+            min-height: 70px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+        }
+
+        .btn-redirect {
+            display: block;
+            background-color: var(--accent-dark); /* Warna tombol sesuai gambar */
+            color: #ffffff;
+            text-decoration: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-redirect:active {
+            transform: scale(0.97);
+            opacity: 0.9;
+        }
+
+        .progress-container {
+            width: 40px;
+            height: 3px;
+            background: #e2e8f0;
+            margin: 25px auto 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--text-muted);
+            width: 0%;
+            transition: width 2s linear;
+        }
+    </style>
 </head>
 <body>
-    <h2>Halaman ini telah berpindah!</h2>
-    <p>Kami sedang mengalihkan Anda ke link terbaru dalam 5 detik.</p>
-    <p>Jika tidak otomatis, <a href="https://rifai29.github.io/Semua/">klik di sini</a>.</p>
+
+    <div class="container">
+        <div class="status-tag">System Update</div>
+        
+        <div id="quote-text">
+            </div>
+        
+        <a href="https://rifai29.github.io/Semua2/" class="btn-redirect">
+            Buka Halaman Baru
+        </a>
+
+        <div class="progress-container">
+            <div id="pBar" class="progress-fill"></div>
+        </div>
+    </div>
+
+    <script>
+        const quotes = [
+            "Perjalanan baru dimulai di sini.",
+            "Desain sederhana, hasil maksimal.",
+            "Waktunya pindah ke yang lebih baik.",
+            "Minimalis adalah kunci kenyamanan.",
+            "Halaman baru, semangat baru.",
+            "Fokus pada tujuan, bukan hambatan.",
+            "Sesuatu yang keren sedang dimuat.",
+            "Terima kasih telah bersabar.",
+            "Stay clean, stay productuve.",
+            "Satu klik menuju kemudahan."
+        ];
+
+        const targetUrl = "https://rifai29.github.io/Semua2/";
+
+        window.onload = function() {
+            const quoteElement = document.getElementById('quote-text');
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            quoteElement.innerText = randomQuote;
+
+            setTimeout(() => {
+                document.getElementById('pBar').style.width = '100%';
+            }, 100);
+
+            setTimeout(function() {
+                window.location.href = targetUrl;
+            }, 2000);
+        };
+    </script>
+
 </body>
 </html>

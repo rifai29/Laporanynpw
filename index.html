@@ -81,9 +81,9 @@
         #toast{position:fixed;top:20px;left:50%;transform:translateX(-50%)translateY(-100px);background:#323232;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:10000;transition:0.3s;}
         #toast.active{transform:translateX(-50%)translateY(0)}
         
-        .nav-box{display:flex; flex-direction: column; gap:8px; padding:12px;background:var(--bg-soft);border-top:1px solid var(--border);position:sticky;bottom:0;z-index:100}
-        .nav-row{display: flex; justify-content: space-around; align-items: center; width: 100%;}
-
+        /* NAVIGASI BERSIH 1 BARIS */
+        .nav-box{display:flex; justify-content: space-between; align-items: center; padding:12px; background:var(--bg-main); border-top:2px solid var(--primary); position:sticky; bottom:0; z-index:100}
+        
         .sheet{position:fixed;bottom:-100%;left:0;right:0;background:var(--bg-main);z-index:5000;border-radius:24px 24px 0 0;padding:25px 20px;transition:0.4s cubic-bezier(0.4,0,0.2,1);max-width:600px;margin:0 auto;box-shadow:0 -5px 25px rgba(0,0,0,0.2); border: 1px solid var(--border); max-height: 85vh; overflow-y: auto;}
         .sheet.active{bottom:0}
         .sheet-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom: 1px solid var(--border); padding-bottom: 10px;}
@@ -147,16 +147,9 @@
 </div>
 
 <div class="nav-box">
-    <div class="nav-row">
-        <button class="btn-ui" onclick="changePage(currentPage-1)">BARIS PREV</button>
-        <div id="page-info" style="font-size:12px; font-weight:700;">BARIS 1</div>
-        <button class="btn-ui" onclick="changePage(currentPage+1)">BARIS NEXT</button>
-    </div>
-    <div class="nav-row" style="border-top: 1px dashed var(--border); padding-top: 8px;">
-        <button class="btn-ui" onclick="changeColPage(currentColPage-1)">KOLOM PREV</button>
-        <div id="col-page-info" style="font-size:12px; font-weight:700; color:var(--primary);">KOLOM 1-10</div>
-        <button class="btn-ui" onclick="changeColPage(currentColPage+1)">KOLOM NEXT</button>
-    </div>
+    <button class="btn-ui" style="padding: 10px 20px;" onclick="changePage(currentPage-1)">KEMBALI</button>
+    <div id="page-info" style="font-size:13px; font-weight:800; color:var(--primary);">HALAMAN 1</div>
+    <button class="btn-ui" style="padding: 10px 20px;" onclick="changePage(currentPage+1)">LANJUT</button>
 </div>
 
 <div id="sheet-menu" class="sheet">
@@ -218,7 +211,7 @@
 
 <script>
     let activeKey = 'default';
-    let currentPage = 1, currentColPage = 1, rowsPerPage = 10, colsPerPage = 10;
+    let currentPage = 1, rowsPerPage = 10;
     let selectedRowIdx = null, selectedColIdx = null, searchQuery = "";
     let dateFilter = { start: "", end: "" };
     let openCats = JSON.parse(localStorage.getItem('erp_open_cats')) || ["UTAMA"];
@@ -274,18 +267,22 @@
 
     function render() {
         renderSidebar(); document.getElementById('disp-title').innerText = config[activeKey].title;
-        let allCols = config[activeKey].cols, startCol = (currentColPage - 1) * colsPerPage, visibleCols = allCols.slice(startCol, startCol + colsPerPage);
+        let allCols = config[activeKey].cols;
         let hHtml = `<th class="row-num">ID</th>`;
-        visibleCols.forEach((c, i) => { hHtml += `<th><div class="th-inner" onclick="openFilter(${startCol + i})">${c} EDIT</div></th>`; });
+        allCols.forEach((c, i) => { hHtml += `<th><div class="th-inner" onclick="openFilter(${i})">${c} EDIT</div></th>`; });
         document.getElementById('table-head').innerHTML = hHtml;
+        
         let filtered = dataStore[activeKey].map((row, index) => ({row, index}));
         if(searchQuery) filtered = filtered.filter(i => i.row.some(c => c.toString().toLowerCase().includes(searchQuery.toLowerCase())));
         if(dateFilter.start && dateFilter.end) filtered = filtered.filter(i => { let d = (i.row[0] || "").trim(); return d >= dateFilter.start && d <= dateFilter.end; });
+        
+        let totalPages = Math.ceil(filtered.length / rowsPerPage) || 1;
         let paginated = filtered.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+        
         document.getElementById('table-body').innerHTML = paginated.map(item => `<tr><td class="row-num" onclick="openPopUp(${item.index})">${item.index + 1}</td>
-            ${item.row.slice(startCol, startCol + colsPerPage).map((cell, ci) => `<td><input type="text" value="${cell}" oninput="upd(${item.index},${startCol + ci},this.value)"></td>`).join('')}</tr>`).join('');
-        document.getElementById('page-info').innerText = `BARIS: ${currentPage} / ${Math.ceil(filtered.length / rowsPerPage) || 1}`;
-        document.getElementById('col-page-info').innerText = `KOLOM ${startCol + 1} - ${Math.min(startCol + colsPerPage, allCols.length)}`;
+            ${item.row.map((cell, ci) => `<td><input type="text" value="${cell}" oninput="upd(${item.index},${ci},this.value)"></td>`).join('')}</tr>`).join('');
+        
+        document.getElementById('page-info').innerText = `HALAMAN: ${currentPage} / ${totalPages}`;
     }
 
     function openCatPicker() {
@@ -309,7 +306,6 @@
     }
 
     function closeCatPicker() { document.getElementById('sheet-cat-picker').classList.remove('active'); }
-
     function renameTable() { let n = prompt("NAMA BARU:", config[activeKey].title); if(n){config[activeKey].title = n.toUpperCase(); autoSave(); render(); closeModal();} }
     
     function moveTable(dir) {
@@ -339,9 +335,8 @@
         }
     }
     
-    function changeColPage(p) { if(p >= 1 && p <= Math.ceil(config[activeKey].cols.length/colsPerPage)) { currentColPage = p; render(); } }
     function changePage(p) { let t = Math.ceil(dataStore[activeKey].length/rowsPerPage) || 1; if(p >= 1 && p <= t) { currentPage = p; render(); } }
-    function switchTab(k) { activeKey = k; currentPage = 1; currentColPage = 1; render(); closeAll(); }
+    function switchTab(k) { activeKey = k; currentPage = 1; render(); closeAll(); }
     function upd(r, c, v) { dataStore[activeKey][r][c] = v; autoSave(); }
     function doSearch() { searchQuery = document.getElementById('searchInp').value; currentPage = 1; render(); }
     function openPopUp(idx) { selectedRowIdx = idx; document.getElementById('sheet-menu').classList.add('active'); document.getElementById('overlay').classList.add('active'); }
